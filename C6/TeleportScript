@@ -1,20 +1,19 @@
---add in the part that is to teleport the player
-local teleportPart = script.Parent
+-- Put this Script inside the Part
+-- Make sure the Part has a ProximityPrompt inside it
 
--- Destination position (change these numbers to where you want the player to go)
+local teleportPart = script.Parent
+local prompt = teleportPart:WaitForChild("ProximityPrompt")
+
+-- Destination position (edit this)
 local destination = Vector3.new(50, 10, 50)
 
--- Function to teleport player
-local function onTouch(hit)
-	-- Check if the thing that touched is a character with a Humanoid
-	local character = hit.Parent
-	if character and character:FindFirstChild("Humanoid") then
-		local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
-		if humanoidRootPart then
-			humanoidRootPart.CFrame = CFrame.new(destination)
+-- When the player triggers the prompt
+prompt.Triggered:Connect(function(player)
+	local character = player.Character
+	if character then
+		local hrp = character:FindFirstChild("HumanoidRootPart")
+		if hrp then
+			hrp.CFrame = CFrame.new(destination)
 		end
 	end
-end
-
--- Connect the function to Touched event
-teleportPart.Touched:Connect(onTouch)
+end)
