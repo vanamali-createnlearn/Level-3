@@ -1,0 +1,51 @@
+--// CONFIGURATION
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local spawnFolder = workspace:FindFirstChild("SpawnedParts") or Instance.new("Folder", workspace)
+spawnFolder.Name = "SpawnedParts"
+
+local template = replicatedStorage:WaitForChild("SpawnPart") -- Your mesh or part to clone
+local spawnPoint = Vector3.new(0, 5, 0) -- center around which parts will spawn
+local spawnRadius = 20 -- how far around the point they can appear
+
+local spawnInterval = 3 -- seconds between each spawn
+local cleanupInterval = 10 -- seconds between each cleanup
+local maxParts = 15 -- max number of spawned parts allowed at once
+
+--// FUNCTION: spawn a new part around the spawn point
+local function spawnPart()
+	local clone = template:Clone()
+
+	-- Randomize position around the center point
+	local angle = math.random() * 2 * math.pi
+	local distance = math.random() * spawnRadius
+	local offset = Vector3.new(math.cos(angle) * distance, 0, math.sin(angle) * distance)
+
+	clone.Position = spawnPoint + offset
+	clone.Parent = spawnFolder
+end
+
+--// FUNCTION: cleanup older parts if too many
+local function cleanupParts()
+	local children = spawnFolder:GetChildren()
+	if #children > maxParts then
+		-- Remove the oldest extras
+		for i = 1, #children - maxParts do
+			children[i]:Destroy()
+		end
+	end
+end
+
+--// MAIN LOOP
+task.spawn(function()
+	while true do
+		spawnPart()
+		task.wait(spawnInterval)
+	end
+end)
+
+task.spawn(function()
+	while true do
+		cleanupParts()
+		task.wait(cleanupInterval)
+	end
+end)
