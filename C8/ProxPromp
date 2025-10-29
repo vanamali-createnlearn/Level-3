@@ -1,0 +1,37 @@
+-- TrickOrTreatScript (inside the door part or model)
+-- Handles both single Part and Model doors automatically
+
+local prompt
+
+-- Detect if this is a Model or a single Part
+if script.Parent:IsA("Model") then
+	prompt = script.Parent:FindFirstChildWhichIsA("ProximityPrompt", true)
+else
+	prompt = script.Parent:FindFirstChildOfClass("ProximityPrompt")
+end
+
+if not prompt then
+	warn("No ProximityPrompt found in " .. script.Parent.Name)
+	return
+end
+
+prompt.Triggered:Connect(function(player)
+	if not player or not player:FindFirstChild("leaderstats") then return end
+	
+	local points = player.leaderstats:FindFirstChild("Points")
+	if not points then return end
+
+	-- Generate a random number between 0 and 4
+	local reward = math.random(0, 4)
+
+	-- Add to player's candy count
+	points.Value += points
+
+	-- Feedback to player in console (optional)
+	print(player.Name .. " received " .. reward .. " points")
+
+	-- Optional: Cooldown to prevent spam clicking
+	prompt.Enabled = false
+	task.wait(3) -- Wait 3 seconds before re-enabling
+	prompt.Enabled = true
+end)
