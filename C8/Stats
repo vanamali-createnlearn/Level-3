@@ -8,7 +8,7 @@ game.Players.PlayerAdded:Connect(function(player)
 
 	-- Create "Candies" stat (you can rename to Treats if you prefer)
 	local candies = Instance.new("IntValue")
-	candies.Name = "Points"
+	candies.Name = "Crystals"
 	candies.Value = 0
 	candies.Parent = leaderstats
 end)
